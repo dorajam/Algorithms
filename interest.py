@@ -8,12 +8,8 @@ the algorithm calculates the total amount paid after 12 months
 and the remaining balance with the accrued interest.
 
 '''
-
-
 balance = 3329
-month = 0
 r = 0.2
-mr = 0.04
 total = 0
 
 for i in range(1,13):
