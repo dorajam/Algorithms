@@ -21,12 +21,7 @@ def permutation(s):
             result.append(s)
             print s, result
             return permutation(s[0] + s[-1] + s[1:-1])
-        return permutation(s[1:] + s[0])
-        
-        
-            
-        
-        
-        
+        while isIn(s[1:] + s[0], result) == False:
+            return permutation(s[1:] + s[0])      
         
 permutation('dora')
