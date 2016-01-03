@@ -17,4 +17,12 @@ class Queue:
             return self.queue.pop(0)
         except IndexError:
             raise IndexError('Queue is empty')
+    def show(self):
+        print self.queue
+            
+q = Queue([1,2,3])
+q.insert(4)
+q.show()
+q.remove()
+q.show()
       

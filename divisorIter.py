@@ -17,3 +17,4 @@ def gcdIter(a, b):
         x -= 1
     return x
     
+print gcdIter(48,32)
