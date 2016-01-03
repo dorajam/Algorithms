@@ -1,17 +1,23 @@
 # Dora Jambor
 # stack.py
-# 12.12.2014
+# December 2015
 
-class Stack(list):
-    def push(self, item):
-        self.append(item)
+class Stack:
+    def __init__(self,lista = None):
+        if lista is None:
+            self.lista = []
+        else:
+            self.lista = list(lista)
+            
+    def put(self,item):
+        self.lista.append(item)
         
-    def isEmpty(self):
-        print 'Empty'
-        return not self
-
-
-stack = Stack()
-stack.push(5)
-stack.push(3)
-stack.pop()
+    def remove(self):
+        try:
+            self.lista.pop()
+        except IndexError:
+            raise IndexError('Stack\'s empty')
+            
+    def __str__(self):
+        return str(self.lista)
+        

@@ -12,4 +12,7 @@ def gcdRecur(a, b):
     if b == 0:
         return a
     else:
+        print a,b
         return gcdRecur(b, a%b)
+        
+print gcdRecur(48,44)
