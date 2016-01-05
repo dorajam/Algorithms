@@ -17,6 +17,12 @@ and use extra space proportional to N.
 
 import random, pdb
 
+size = 30
+IDs = range(size)
+numRoots = size
+sizes = [1] * size
+total = 0
+
 # find the root of the person
 def root(index):
     while (index != IDs[index]):
@@ -69,14 +75,13 @@ def play(size):
         if connected(p, q) == False:
             union(p, q)
             total += 1
-    return total
-
-size = 30
-IDs = range(size)
-numRoots = size
-sizes = [1] * size
-total = 0 
-play(size)   
+    return total  
         
+def main():
+    play(size) 
+     
+            
+if __name__ == "__main__":
+    main()
     
     
