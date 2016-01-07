@@ -1,125 +1,149 @@
+# -*- coding: utf-8 -*-
 # Dora Jambor, dorajambor@gmail.com
 # January, 2016
 # Implementation of the game fifteen in Python
 
-import time
-import Tkinter as tk
+import time, pdb
+from Tkinter import *
 
+# ---------- parameters ----------
 # Dimensions
 min_dim = 3
 max_dim = 9
-d = 0
-
-board = []
-counter = 0
-
 
 # Location of blank space
 blankx = 0
 blanky = 0
 
-# Introduce the game
+# ---------- functions ----------
 def greet():
-    #clear()
-    print 'GAME OF FIFTEEN'
-    time.sleep(0.5)
+    print 'This is the Game of Fifteen!'
 
 def dim():
-    global min_dim, max_dim, d
-    d = int(raw_input('Insert the dimension of the board: '))
+    result = int(raw_input('Insert the dimension of the board: '))
     while True:
-        if d >=min_dim and d <= max_dim:
+        if result >=min_dim and result <= max_dim:
             break
-        d = int(raw_input('Try again: '))
-    return d     
-    
-# Initialize the board
-def init():
-    numbers = d * d - 1
-    global board, blankx, blanky
-    blankx = d - 1
-    blanky = d - 1
-    board = [[d*d-1-i-d*j for i in range(d)] for j in range(d)]
-    board[blankx][blanky] = d * d
+        result = int(raw_input('Try again: '))
+    return result    
+            
 
-        
-def draw(d):
-    global board
-    for i in range(d):
-        for j in range(d):
-            if board[i][j] == d * d:
-                print '_'
-            else:
-                print board[i][j]
-                
-def move():
-    tile = int(raw_input('Which tile would you like to move: '))
-    global board, blankx, blanky
-    for i in range(d):
-        for j in range(d):
-            if(board[i][j] == tile):
-                if(i - 1 == blanky or i + 1 == blanky or j - 1 == blankx or j + 1 == blankx):
-                    board[i][j] = d * d
-                    board[blanky][blankx] = tile
-                    blanky = i
-                    blankx = j
-                    return True
-    return False
-                
+# Play the game
+'''
+A function called by Tkinter that allows the user to interact with the game board 
+and play the game by moving the tiles.
+'''   
+def play(i,j):
+    global blankx, blanky, game_running
+    print 'play i,j:', i, j
+    print 'blankx, blanky:', blankx, blanky
+    
+    if game_running:
+
+        if (blankx, blanky) in [(i+1,j),(i-1,j),(i,j+1),(i,j-1)]:
+            board[blanky][blankx].set(board[j][i].get())
+            board[j][i].set(' ')
+            blanky = j
+            blankx = i
+            
+            if won():
+                # lable is now visible
+                bn.lift()
+                game_running = False
+    
+                                                                        
 def won():
-    for i in range(d-1):
-        for j in range(d-1):
-            if board[i][j] != board[i+1][j] - 1 or board[i][j] != board[i][j+1]-1:
+    number = 0
+
+    for j, row in enumerate(board):
+        for i, char in enumerate(row,1):
+            number += 1
+            if number == d * d and char.get() == ' ':
+                return True
+            elif char.get() != str(number):
                 return False
     return True
-
-def on_click(i,j,event):
-    global counter
-    color = "grey" if counter%2 else "red"
-    event.widget.config(bg=color)
-    board[i][j] = color
-    counter += 1
-
-def key(event):
-    print "pressed", repr(event.char)
-
-def callback(event):
-    window.focus_set()
-    print "clicked at", event.x, event.y  
-
-def visualize():
-    window = tk.Canvas(width=100, height=100, borderwidth=12, highlightthickness=20,background='bisque')
-    for i,row in enumerate(board):
-        for j,column in enumerate(row):
-            L = tk.Label(root,text='   %s   '%board[i][j],bg='pink')
-            L.grid(row=i,column=j)
-            if board[i][j] == d*d:
-                L = tk.Label(root,text='        ')
-            L.grid(row=i,column=j,sticky="nsew", padx=1, pady=1)
-            # L.bind('<Button-1>',lambda e,i=i,j=j: on_click(i,j,e))
-            #L.bind("<Key>", key)
-           # L.bind("<Button-1>", callback)
-
-root = tk.Tk()
-root.title = 'GAME FIFTEEN'
-
-def main():
-    greet()
-    global d
-    d = dim()
-    init()
-    #draw(d)
-    # visual
-    visualize()
-    root.mainloop()
-
-    while won() == False:
-        if not (move()):
-            print 'Illegal move!'
-    print "You won the game!"
     
-     
-if __name__ == "__main__":
-    main()
     
+# Initialize the board 
+'''
+This sets up/resets all data and variables - and fills and updates board with numbers.
+'''
+def setup():
+    global blankx, blanky, game_running
+    # set blank coordinates
+    blankx = d - 1
+    blanky = d - 1
+    
+    # this is where bn is marked as not defined - "global name 'bn' is not defined"
+    bn.lower()
+    
+    # fill/update board with numbers
+    numbers = d * d
+    
+    for row in board:
+        for tile in row:
+            numbers -= 1
+            if numbers == 0:
+                tile.set('')
+            else:
+                tile.set(str(numbers))
+
+    # continue game
+    game_running = True
+
+
+    
+# ---------- main ----------
+board = []
+greet()
+d = dim()
+buttons = []
+setup()
+
+# create window
+root = Tk()
+root.config(bg = 'black', borderwidth=4)
+root.wm_title("Game of Fifteen")
+
+# label for winning
+bn = Button(root, text="You won!\n <click to start>", command=setup)
+bn.grid(row=0, column=0, ipadx=3, ipady=10)
+
+# frame for the board game
+frame = Frame(root)
+frame.config(bg='black')
+frame.grid(row=0, column=0)
+
+# fill board with StringVars
+for i in range(d):
+    row = []
+    for j in range(d):
+        var_text = StringVar()
+        row.append(var_text)
+    board.append(row)
+
+# update board vars with initial numbers
+setup()
+
+ #visualize board on frame - start playing            
+for j, row in enumerate(board):
+    for i, string_var in enumerate(row):
+        b = Label(frame, textvariable=string_var, bg='pink', font=("Helvetica", 30), relief=RAISED)  
+        b.grid(row=j, column=i, sticky="nsew", ipadx=8, padx=4, pady=4)
+        b.bind('<Button-1>',lambda e, i=i,j=j:play(i,j))
+
+
+game_running = True
+
+# start engine
+root.mainloop()    
+
+    
+    
+
+
+
+
+
 
