@@ -25,7 +25,7 @@ SCRABBLE_LETTER_VALUES = {
 # Helper code
 # (you don't need to understand this helper code)
 
-WORDLIST_FILENAME = "/Users/Dora/Desktop/words.txt"
+WORDLIST_FILENAME = "/Users/Dora/Desktop/Programming/Algorithms/Scrabble Word Game MIT 6.00x/words.txt"
 
 def loadWords():
     """
