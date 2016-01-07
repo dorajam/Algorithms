@@ -3,7 +3,6 @@
 # January, 2016
 # Implementation of the game fifteen in Python
 
-import time, pdb
 from Tkinter import *
 
 # ---------- parameters ----------
@@ -27,7 +26,7 @@ def dim():
         result = int(raw_input('Try again: '))
     return result    
             
-
+            
 # Play the game
 '''
 A function called by Tkinter that allows the user to interact with the game board 
@@ -35,14 +34,13 @@ and play the game by moving the tiles.
 '''   
 def play(i,j):
     global blankx, blanky, game_running
-    print 'play i,j:', i, j
-    print 'blankx, blanky:', blankx, blanky
     
     if game_running:
-
+        # update vars if tile can be moved
         if (blankx, blanky) in [(i+1,j),(i-1,j),(i,j+1),(i,j-1)]:
             board[blanky][blankx].set(board[j][i].get())
             board[j][i].set(' ')
+            
             blanky = j
             blankx = i
             
@@ -56,15 +54,15 @@ def won():
     number = 0
 
     for j, row in enumerate(board):
-        for i, char in enumerate(row,1):
+        for i, string_var in enumerate(row,1):
             number += 1
-            if number == d * d and char.get() == ' ':
+            if number == d * d and string_var.get() == ' ':
                 return True
-            elif char.get() != str(number):
+            elif string_var.get() != str(number):
                 return False
     return True
-    
-    
+
+
 # Initialize the board 
 '''
 This sets up/resets all data and variables - and fills and updates board with numbers.
@@ -95,25 +93,27 @@ def setup():
 
     
 # ---------- main ----------
-board = []
 greet()
 d = dim()
-buttons = []
-setup()
 
+board = []
+
+
+# --- 1.) Initialization of the UI and event handlers ---
 # create window
 root = Tk()
-root.config(bg = 'black', borderwidth=4)
+root.config(bg = 'white', borderwidth=4)
 root.wm_title("Game of Fifteen")
 
-# label for winning
+# button for winning
 bn = Button(root, text="You won!\n <click to start>", command=setup)
 bn.grid(row=0, column=0, ipadx=3, ipady=10)
 
 # frame for the board game
 frame = Frame(root)
-frame.config(bg='black')
+frame.config(bg='black',borderwidth=2)
 frame.grid(row=0, column=0)
+
 
 # fill board with StringVars
 for i in range(d):
@@ -129,21 +129,9 @@ setup()
  #visualize board on frame - start playing            
 for j, row in enumerate(board):
     for i, string_var in enumerate(row):
-        b = Label(frame, textvariable=string_var, bg='pink', font=("Helvetica", 30), relief=RAISED)  
+        b = Label(frame, textvariable=string_var, bg='pink', width=2, height=1, font=("Times", 30, 'bold'), relief=RAISED)  
         b.grid(row=j, column=i, sticky="nsew", ipadx=8, padx=4, pady=4)
         b.bind('<Button-1>',lambda e, i=i,j=j:play(i,j))
 
-
-game_running = True
-
-# start engine
-root.mainloop()    
-
-    
-    
-
-
-
-
-
-
+# --- 2.) Initialization of the event loop - start engine---
+root.mainloop()  
