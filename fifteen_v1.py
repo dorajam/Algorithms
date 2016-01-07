@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
 # Dora Jambor, dorajambor@gmail.com
 # January, 2016
 # Game of Fifteen, fifteen.py
+
 '''
 This is my implementation of game of fifteen using the Tkinter module for GUI, 
 while allowing you to play on an actual game board.
@@ -11,7 +11,6 @@ with the blank space placed in the bottom right corner.
 Press return to reset the initial numbers.
 '''
 
-from time import sleep
 from Tkinter import *
 
 # -------------------- parameters --------------------
@@ -116,57 +115,9 @@ def won():
 '''
 These are the <key> events that enable your keyboard to move tiles with.
 ''' 
-# handling double digit numbers
-def test_after():
-    global keybuf
-    
-    # check if empty
-    if keybuf:
-        # get all keys in buffer as one text
-        text = ''.join(keybuf)
-        print text
-        for j, row in enumerate(board):
-            for i, char in enumerate(row):
-                if char.get() == text:
-                    # swop tiles
-                    play(i,j)
-                    
-                    # clear list
-                    keybuf = []
-                    return     
-                          
-def key(event):
-    global keybuf
-    keybuf.append(event.char)
-    root.after(500, test_after)
-    
-                                    
-def right_Key(event):
-    i = blankx + 1
-    j = blanky
-    if 0 <= i < d and 0 <= j < d:
-        play(i,j)
-    
-def left_Key(event):
-    i = blankx - 1
-    j = blanky
-    if 0 <= i < d and 0 <= j < d:
-        play(i,j)  
-            
-def up_Key(event):
-    i = blankx
-    j = blanky - 1
-    if 0 <= i < d and 0 <= j < d:
-        play(i,j)
-        
-def down_Key(event):
-    i = blankx
-    j = blanky + 1
-    if 0 <= i < d and 0 <= j < d:
-        play(i,j)
 
 
-# helper function to solve 3x3 board
+# helper function to solve 3x3 board - only use this through prep phase
 def automate(event):
     path = [1,2,5,4,3,1,2,3,4,8,7,6,1,2,3,4,6,1,2,3,4,5,8,7,1,2,3,4,5,6,4,5,6,8,7,4,5,6]
     k=0
@@ -194,13 +145,9 @@ root.config(bg = 'white', borderwidth=4)
 root.wm_title("Game of Fifteen")
 
 # binding key events
-root.bind('<Key>', key)
-root.bind('<Right>', right_Key)
-root.bind('<Left>', left_Key)
-root.bind('<Up>', up_Key)
-root.bind('<Down>', down_Key)
+root.bind("<Return>", setup)
 
-# automated test only for 3x3 board
+# automated test only for 3x3 board - don't use it otherwise
 root.bind("<space>", automate)
 
 # create welcome label
@@ -208,8 +155,7 @@ welcome = Label(root, text="Hi there! \n < click on board to start >",font=("Tim
 welcome.config(bg='black',fg='pink',borderwidth=2)
 welcome.grid(row=0, column=0, ipadx=3, ipady=10)
 
-# create button for winning
-root.bind("<Return>", setup)
+# create winning label
 bn = Label(root, text="Good job!\n < click return to start >",font=("Times", 13, 'bold'), relief=RAISED)
 bn.config(bg='black',fg='pink',borderwidth=2)
 bn.grid(row=0, column=0, ipadx=3, ipady=10)
